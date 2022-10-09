@@ -41,78 +41,78 @@ Searchtile(BuildContext context, String image, String songname, String artist) {
   );
 }
 
-allsongstile(BuildContext context, image, String songname, String artist) {
-  var _MediaQuery = MediaQuery.of(context);
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      color: Color(0xff4a4e69),
-    ),
-    // height: 70,
-    width: double.infinity,
-    child: ListTile(
-      // contentPadding: EdgeInsets.symmetric(horizontal: 4),
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.network(
-          image,
-          height: _MediaQuery.size.height * 0.8,
-          fit: BoxFit.cover,
-        ),
-      ),
-      title: Text(
-        songname,
-        style: TextStyle(
-          color: Color(0xffDCC6C6),
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-        ),
-      ),
-      subtitle: Text(
-        artist,
-        style: TextStyle(color: Colors.white, fontSize: 12),
-      ),
-      trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
-    ),
-  );
-}
+// mostsongstile(BuildContext context, image, String songname, String artist) {
+//   var _MediaQuery = MediaQuery.of(context);
+//   return Container(
+//     decoration: BoxDecoration(
+//       borderRadius: BorderRadius.circular(20),
+//       color: Color(0xff4a4e69),
+//     ),
+//     // height: 70,
+//     width: double.infinity,
+//     child: ListTile(
+//       // contentPadding: EdgeInsets.symmetric(horizontal: 4),
+//       leading: ClipRRect(
+//         borderRadius: BorderRadius.circular(10),
+//         child: Image.network(
+//           image,
+//           height: _MediaQuery.size.height * 0.8,
+//           fit: BoxFit.cover,
+//         ),
+//       ),
+//       title: Text(
+//         songname,
+//         style: TextStyle(
+//           color: Color(0xffDCC6C6),
+//           fontWeight: FontWeight.w700,
+//           fontSize: 16,
+//         ),
+//       ),
+//       subtitle: Text(
+//         artist,
+//         style: TextStyle(color: Colors.white, fontSize: 12),
+//       ),
+//       trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+//     ),
+//   );
+// }
 
-recentstile(
-    BuildContext context, String image, String songname, String artist) {
-  var _MediaQuery = MediaQuery.of(context);
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      color: Color(0xff4a4e69),
-    ),
-    // height: 70,
-    width: double.infinity,
-    child: ListTile(
-      // contentPadding: EdgeInsets.symmetric(horizontal: 4),
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.network(
-          image,
-          height: _MediaQuery.size.height * 0.8,
-          fit: BoxFit.cover,
-        ),
-      ),
-      title: Text(
-        songname,
-        style: TextStyle(
-          color: Color(0xffDCC6C6),
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-        ),
-      ),
-      subtitle: Text(
-        artist,
-        style: TextStyle(color: Colors.white, fontSize: 12),
-      ),
-      trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
-    ),
-  );
-}
+// recentstile(
+//     BuildContext context, String image, String songname, String artist) {
+//   var _MediaQuery = MediaQuery.of(context);
+//   return Container(
+//     decoration: BoxDecoration(
+//       borderRadius: BorderRadius.circular(20),
+//       color: Color(0xff4a4e69),
+//     ),
+//     // height: 70,
+//     width: double.infinity,
+//     child: ListTile(
+//       // contentPadding: EdgeInsets.symmetric(horizontal: 4),
+//       leading: ClipRRect(
+//         borderRadius: BorderRadius.circular(10),
+//         child: Image.network(
+//           image,
+//           height: _MediaQuery.size.height * 0.8,
+//           fit: BoxFit.cover,
+//         ),
+//       ),
+//       title: Text(
+//         songname,
+//         style: TextStyle(
+//           color: Color(0xffDCC6C6),
+//           fontWeight: FontWeight.w700,
+//           fontSize: 16,
+//         ),
+//       ),
+//       subtitle: Text(
+//         artist,
+//         style: TextStyle(color: Colors.white, fontSize: 12),
+//       ),
+//       trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+//     ),
+//   );
+// }
 
 // Favouritestile(
 //     BuildContext context, String image, String songname, String artist) {

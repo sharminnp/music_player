@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/widgets/allsongs.dart';
-import 'package:music_player/widgets/common.dart';
-import 'package:music_player/widgets/mini_player.dart';
+import 'package:music_player/widgets/mostsongs.dart';
 
-class AllSongsScreen extends StatelessWidget {
-  const AllSongsScreen({Key? key}) : super(key: key);
+class MostPlayedSongsScreen extends StatelessWidget {
+  const MostPlayedSongsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +13,7 @@ class AllSongsScreen extends StatelessWidget {
         backgroundColor: Color(0xff9C95A1),
         centerTitle: true,
         title: Text(
-          "All Songs",
+          "MostPlayed Songs",
           style: TextStyle(
             fontSize: 20,
             color: Color(0xff3A2D43),
@@ -29,7 +27,7 @@ class AllSongsScreen extends StatelessWidget {
             flex: 2,
             child: Padding(
               padding: const EdgeInsets.only(left: 13, right: 13, top: 8),
-              child: AllSongs(),
+              child: mostPlayedWidget(),
             ),
           ),
           // MiniPlayer(

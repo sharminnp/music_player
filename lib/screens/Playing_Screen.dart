@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:marquee/marquee.dart';
 import 'package:music_player/models/types.dart';
 import 'package:music_player/screens/home.dart';
+import 'package:music_player/widgets/mostPlayedFunction.dart';
+import 'package:music_player/widgets/recentFunction.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class PlayingScreen extends StatefulWidget {
@@ -57,6 +62,58 @@ class _PlayingScreenState extends State<PlayingScreen> {
     //   ),
     //   showNotification: true,
     // );
+  }
+
+  static Box<SongTypes> songBox = Hive.box<SongTypes>("DbSongs");
+  static Box<List> PlaylistBox = Hive.box<List>("Playlist");
+
+  static addSongstoRecents({required String id}) async {
+    List<SongTypes> dbSongs = songBox.values.toList().cast();
+
+    final List<SongTypes> recentSongList =
+        PlaylistBox.get('recent')!.toList().cast<SongTypes>();
+
+    final SongTypes recentSong =
+        dbSongs.firstWhere((song) => song.id.contains(id));
+    int count = recentSong.count;
+    recentSong.count = count + 1;
+    log(recentSong.count.toString());
+    addSongstoMostlyPlayed(id);
+
+    if (recentSongList.length >= 10) {
+      recentSongList.removeLast();
+    }
+
+    if (recentSongList.where((song) => song.id == recentSong.id).isEmpty) {
+      recentSongList.insert(0, recentSong);
+      await PlaylistBox.put('recent', recentSongList);
+    } else {
+      recentSongList.removeWhere((song) => song.id == recentSong.id);
+      recentSongList.insert(0, recentSong);
+      await PlaylistBox.put('recent', recentSongList);
+    }
+  }
+
+  static addSongstoMostlyPlayed(String id) async {
+    final mostPlayedList =
+        PlaylistBox.get('mostlyPlayed')!.toList().cast<SongTypes>();
+    final dbSongs = songBox.values.toList().cast<SongTypes>();
+    final mostPlayedSong = dbSongs.firstWhere((song) => song.id.contains(id));
+    if (mostPlayedList.length >= 10) {
+      mostPlayedList.removeLast();
+    }
+    if (mostPlayedSong.count >= 3) {
+      if (mostPlayedList
+          .where((song) => song.id == mostPlayedSong.id)
+          .isEmpty) {
+        mostPlayedList.insert(0, mostPlayedSong);
+        await PlaylistBox.put('mostlyPlayed', mostPlayedList);
+      } else {
+        mostPlayedList.removeWhere((song) => song.id == mostPlayedSong.id);
+        mostPlayedList.insert(0, mostPlayedSong);
+        await PlaylistBox.put('mostlyPlayed', mostPlayedList);
+      }
+    }
   }
 
   @override
@@ -191,6 +248,7 @@ class _PlayingScreenState extends State<PlayingScreen> {
 
               widget.audioPlayer.builderRealtimePlayingInfos(
                   builder: (context, info) {
+                addSongstoRecents(id: myAudio.metas.id!);
                 return Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: ProgressBar(

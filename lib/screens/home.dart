@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/screens/Favourite_Screen.dart';
+import 'package:music_player/screens/MostPlayedSong_screen.dart';
 import 'package:music_player/screens/PlaylistFolder_Screen.dart';
 import 'package:music_player/screens/Recents_Screen.dart';
 import 'package:music_player/screens/Settings_screen.dart';
-import 'package:music_player/screens/allsongs_screen.dart';
+
 import 'package:music_player/screens/searchscreen.dart';
 import 'package:music_player/widgets/Homesongs.dart';
 import 'package:music_player/widgets/mini_player.dart';
@@ -142,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (ctx) => AllSongsScreen()));
+                                    builder: (ctx) => MostPlayedSongsScreen()));
                           },
                           child: Container(
                             height: _MediaQuery.size.height * 0.08,

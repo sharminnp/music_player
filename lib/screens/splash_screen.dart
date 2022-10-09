@@ -35,6 +35,8 @@ class _SplashScreenState extends State<SplashScreen> {
     fetchphonesongs();
     _navigatetohome();
     getFavourites();
+    getrecent();
+    getmostly();
   }
 
   getFavourites() {
