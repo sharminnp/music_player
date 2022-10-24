@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:music_player/widgets/Favourites.dart';
-import 'package:music_player/widgets/common.dart';
+
 import 'package:music_player/widgets/mini_player.dart';
 
 class FavouriteScreen extends StatefulWidget {

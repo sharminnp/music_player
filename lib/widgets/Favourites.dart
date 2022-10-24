@@ -43,7 +43,7 @@ class _FavouritesState extends State<Favourites> {
                 )
               : ListView.separated(
                   separatorBuilder: ((context, index) => SizedBox(
-                        height: 5,
+                        height: _MediaQuery.size.height * 0.01,
                       )),
                   itemCount: songList.length,
                   itemBuilder: (context, index) {
@@ -52,32 +52,5 @@ class _FavouritesState extends State<Favourites> {
                   },
                 );
         });
-    //  child: ListView.separated(
-    //       itemCount: favSongs!.length,
-    //       separatorBuilder: (context, index) => SizedBox(
-    //             height: _MediaQuery.size.height * 0.01,
-    //           ),
-    //       itemBuilder: (context, index) =>
-    //           FavFunction(context: context, songList: favSongs!, index: index)));
-    // }
-
-    // addSongstoFavourites(
-    //     {required BuildContext context, required String id}) async {
-    //   List<SongTypes> allsongs = songBox.values.toList().cast();
-
-    //   final List<SongTypes> favSongList =
-    //       PlaylistBox.get('favourites')!.toList().cast<SongTypes>();
-
-    //   final SongTypes favsong =
-    //       allsongs.firstWhere((song) => song.id.contains(id));
-
-    //   if (favSongList.where((song) => song.id == favsong.id).isEmpty) {
-    //     favSongList.add(favsong);
-
-    //     await PlaylistBox.put('favourites', favSongList);
-    //   }
-    // }
-
-    // ignore: non_constant_identifier_names
   }
 }

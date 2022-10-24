@@ -24,19 +24,10 @@ class _SplashScreenState extends State<SplashScreen> {
   List<SongTypes> recentSongList = [];
   List<SongTypes> MostSongList = [];
 
-  Future<void> requestPermission() async {
-    await Permission.storage.request();
-  }
-
   @override
   void initState() {
-    requestPermission();
     super.initState();
     fetchphonesongs();
-    _navigatetohome();
-    getFavourites();
-    getrecent();
-    getmostly();
   }
 
   getFavourites() {
@@ -52,12 +43,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   getmostly() {
-    if (PlaylistBox.keys.contains('mostlyPlayed')) {
+    if (!PlaylistBox.keys.contains('mostlyPlayed')) {
       PlaylistBox.put('mostlyPlayed', MostSongList);
     }
   }
 
   fetchphonesongs() async {
+    await Permission.storage.request();
     fetchedSongs = await _audioQuery.querySongs(
       sortType: null,
       orderType: OrderType.ASC_OR_SMALLER,
@@ -78,6 +70,11 @@ class _SplashScreenState extends State<SplashScreen> {
     for (var song in dbSongs) {
       await songBox.put(song.id, song);
     }
+
+    getFavourites();
+    getrecent();
+    getmostly();
+    _navigatetohome();
   }
 
   _navigatetohome() async {
@@ -88,27 +85,28 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var _MediaQuery = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: Color(0xff9C95A1),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 310),
+            padding: const EdgeInsets.only(top: 200, left: 20),
             child: Row(
               children: [
                 Image.asset(
-                  "assets/images/image1.png",
-                  width: 130,
-                  height: 130,
+                  "assets/images/tunifly-logo.png",
+                  width: _MediaQuery.size.width * 0.9,
+                  height: _MediaQuery.size.height * 0.5,
                 ),
-                Text(
-                  "TUNIFLY",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 50,
-                    color: Color(0xff3A2D43),
-                  ),
-                )
+                // Text(
+                //   "TUNIFLY",
+                //   style: TextStyle(
+                //     fontWeight: FontWeight.w900,
+                //     fontSize: 50,
+                //     color: Color(0xff3A2D43),
+                //   ),
+                // )
               ],
             ),
           )

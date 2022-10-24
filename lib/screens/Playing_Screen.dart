@@ -3,13 +3,16 @@ import 'dart:developer';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+
+import 'package:hive_flutter/adapters.dart';
 import 'package:marquee/marquee.dart';
+import 'package:music_player/functions/recentMostFav.dart';
 import 'package:music_player/models/types.dart';
-import 'package:music_player/screens/home.dart';
-import 'package:music_player/widgets/mostPlayedFunction.dart';
-import 'package:music_player/widgets/recentFunction.dart';
+
 import 'package:on_audio_query/on_audio_query.dart';
+
+import '../widgets/playlistList.dart';
+import '../widgets/playlist_function.dart';
 
 class PlayingScreen extends StatefulWidget {
   const PlayingScreen({
@@ -25,6 +28,8 @@ class PlayingScreen extends StatefulWidget {
 
   @override
   State<PlayingScreen> createState() => _PlayingScreenState();
+
+  //static void addSongstoRecents({required String id}) {}
 }
 
 class _PlayingScreenState extends State<PlayingScreen> {
@@ -66,55 +71,6 @@ class _PlayingScreenState extends State<PlayingScreen> {
 
   static Box<SongTypes> songBox = Hive.box<SongTypes>("DbSongs");
   static Box<List> PlaylistBox = Hive.box<List>("Playlist");
-
-  static addSongstoRecents({required String id}) async {
-    List<SongTypes> dbSongs = songBox.values.toList().cast();
-
-    final List<SongTypes> recentSongList =
-        PlaylistBox.get('recent')!.toList().cast<SongTypes>();
-
-    final SongTypes recentSong =
-        dbSongs.firstWhere((song) => song.id.contains(id));
-    int count = recentSong.count;
-    recentSong.count = count + 1;
-    log(recentSong.count.toString());
-    addSongstoMostlyPlayed(id);
-
-    if (recentSongList.length >= 10) {
-      recentSongList.removeLast();
-    }
-
-    if (recentSongList.where((song) => song.id == recentSong.id).isEmpty) {
-      recentSongList.insert(0, recentSong);
-      await PlaylistBox.put('recent', recentSongList);
-    } else {
-      recentSongList.removeWhere((song) => song.id == recentSong.id);
-      recentSongList.insert(0, recentSong);
-      await PlaylistBox.put('recent', recentSongList);
-    }
-  }
-
-  static addSongstoMostlyPlayed(String id) async {
-    final mostPlayedList =
-        PlaylistBox.get('mostlyPlayed')!.toList().cast<SongTypes>();
-    final dbSongs = songBox.values.toList().cast<SongTypes>();
-    final mostPlayedSong = dbSongs.firstWhere((song) => song.id.contains(id));
-    if (mostPlayedList.length >= 10) {
-      mostPlayedList.removeLast();
-    }
-    if (mostPlayedSong.count >= 3) {
-      if (mostPlayedList
-          .where((song) => song.id == mostPlayedSong.id)
-          .isEmpty) {
-        mostPlayedList.insert(0, mostPlayedSong);
-        await PlaylistBox.put('mostlyPlayed', mostPlayedList);
-      } else {
-        mostPlayedList.removeWhere((song) => song.id == mostPlayedSong.id);
-        mostPlayedList.insert(0, mostPlayedSong);
-        await PlaylistBox.put('mostlyPlayed', mostPlayedList);
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +123,7 @@ class _PlayingScreenState extends State<PlayingScreen> {
                 ),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 25,
+                  height: _MediaQuery.size.height * 0.045,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Marquee(
@@ -223,19 +179,52 @@ class _PlayingScreenState extends State<PlayingScreen> {
                             isLoop = !isLoop;
                           });
                         },
-                        icon: Icon(
-                          Icons.repeat,
-                          size: 30,
-                        )),
+                        icon: (isLoop == true)
+                            ? Icon(
+                                Icons.repeat,
+                                color: Color(0xff3A2D43),
+                                size: 30,
+                              )
+                            : Icon(
+                                Icons.repeat_one,
+                                color: Color(0xff3A2D43),
+                                size: 30,
+                              )),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 15, top: 50),
-                    child: IconButton(
-                        onPressed: () {},
+                    child: PopupMenuButton(
                         icon: Icon(
-                          Icons.playlist_add_rounded,
+                          Icons.playlist_add,
+                          color: Color(0xff3A2D43),
                           size: 30,
-                        )),
+                        ),
+                        itemBuilder: ((context) => [
+                              PopupMenuItem(
+                                  onTap: () {
+                                    final Song = showplaylistmodelbottomsheet(
+                                      songId: myAudio.metas.id!,
+                                      ctx: context,
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(
+                                        Icons.playlist_add,
+                                        size: 30,
+                                        color: Colors.black,
+                                      ),
+                                      Text("Add to Playlist")
+                                    ],
+                                  )
+
+                                  //   )        child: IconButton(
+                                  //             color: Colors.white60,
+                                  //             onPressed: () {},
+                                  )
+                            ])),
                   )
                 ],
               ),
@@ -248,14 +237,14 @@ class _PlayingScreenState extends State<PlayingScreen> {
 
               widget.audioPlayer.builderRealtimePlayingInfos(
                   builder: (context, info) {
-                addSongstoRecents(id: myAudio.metas.id!);
+                // addSongstoRecents(id: myAudio.metas.id!);
                 return Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: ProgressBar(
                     thumbColor: Colors.white,
                     baseBarColor: Colors.black,
                     bufferedBarColor: Colors.black45,
-                    thumbGlowColor: Colors.black,
+                    // thumbGlowColor: Colors.black,
                     progressBarColor: Colors.white,
                     timeLabelTextStyle: TextStyle(color: Colors.white),
                     progress: info.currentPosition,
@@ -281,233 +270,147 @@ class _PlayingScreenState extends State<PlayingScreen> {
                       icon: (isshuffle == true)
                           ? Icon(
                               Icons.shuffle,
+                              color: Color(0xff3A2D43),
                               size: 30,
                             )
                           : Icon(
                               Icons.arrow_forward,
+                              color: Color(0xff3A2D43),
                               size: 30,
                             )),
                   // SizedBox(width: _MediaQuery.size.width * 0.05),
-                  IconButton(
-                      onPressed: () {
-                        widget.audioPlayer.previous();
-                      },
-                      icon: Icon(
-                        Icons.fast_rewind_rounded,
-                        size: 50,
-                        color: Color(0xff3A2D43),
-                      )),
-                  // SizedBox(
-                  //   width: _MediaQuery.size.width * 0.04,
-                  // ),
-                  IconButton(
-                    onPressed: () {
-                      if (isPlaying == true) {
-                        widget.audioPlayer.pause();
-
-                        setState(() {
-                          isPlaying = false;
-                        });
-                      } else if (isPlaying == false) {
-                        widget.audioPlayer.play();
-                        setState(() {
-                          isPlaying = true;
-                        });
-                      }
-                    },
-                    icon: isPlaying == true
-                        ? Icon(
-                            Icons.pause_circle,
-                            size: 50,
-                          )
-                        : Icon(
-                            Icons.play_circle,
-                            size: 50,
-                          ),
+                  InkWell(
+                    onDoubleTap: () {},
+                    child: IconButton(
+                        onPressed: () {
+                          widget.audioPlayer.previous();
+                        },
+                        icon: Icon(
+                          Icons.fast_rewind_rounded,
+                          size: 50,
+                          color: Color(0xff3A2D43),
+                        )),
                   ),
                   // SizedBox(
                   //   width: _MediaQuery.size.width * 0.04,
                   // ),
-                  IconButton(
-                      onPressed: () {
-                        widget.audioPlayer.next();
-                      },
-                      icon: Icon(
-                        Icons.fast_forward_rounded,
-                        size: 50,
-                        color: Color(0xff3A2D43),
-                      )),
+                  PlayerBuilder.isPlaying(
+                      player: widget.audioPlayer,
+                      builder: (context, isPlaying) {
+                        return IconButton(
+                          onPressed: () {
+                            if (isPlaying) {
+                              widget.audioPlayer.pause();
+                            } else {
+                              widget.audioPlayer.play();
+                            }
+                          },
+                          icon: isPlaying
+                              ? const Icon(
+                                  Icons.pause_circle,
+                                  size: 50,
+                                )
+                              : const Icon(
+                                  Icons.play_circle,
+                                  size: 50,
+                                ),
+                        );
+                      }),
+                  // SizedBox(
+                  //   width: _MediaQuery.size.width * 0.04,
+                  // ),
+                  InkWell(
+                    onDoubleTap: () {},
+                    child: IconButton(
+                        onPressed: () {
+                          widget.audioPlayer.next();
+                        },
+                        icon: Icon(
+                          Icons.fast_forward_rounded,
+                          size: 50,
+                          color: Color(0xff3A2D43),
+                        )),
+                  ),
                   // SizedBox(width: _MediaQuery.size.width * 0.20),
                   IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.favorite,
-                        size: 30,
-                        color: Colors.white,
-                      )),
+                    color: Colors.white70,
+                    onPressed: () {
+                      addSongstoFavourites(
+                          context: context, id: myAudio.metas.id!);
+                      setState(() {
+                        isThisFavourite(id: myAudio.metas.id!);
+                      });
+                    },
+                    icon: Icon(isThisFavourite(id: myAudio.metas.id!)),
+                  ),
                 ],
               )
             ],
           );
         }
 
-            // Column(
-            //   children: [
-            //     Container(
-            //       height: _MediaQuery.size.height * 0.50,
-            //       width: _MediaQuery.size.width * 0.70,
-            //       child: Image.network(
-            //           "https://a10.gaanacdn.com/gn_img/albums/mGjKrP1W6z/jKrPvDqVW6/size_l.jpg"),
-            //     ),
-            //     Padding(
-            //       padding: const EdgeInsets.only(
-            //         left: 10,
-            //       ),
-            //       child: Text(
-            //         widget.songList[widget.index].displayNameWOExt,
-            //         style: TextStyle(
-            //             color: Colors.white,
-            //             fontSize: 23,
-            //             fontWeight: FontWeight.w800),
-            //       ),
-            //     ),
-            //     Padding(
-            //       padding: const EdgeInsets.only(
-            //         left: 10,
-            //       ),
-            //       child: Text(
-            //         widget.songList[widget.index].artist!,
-            //         style: TextStyle(
-            //             color: Colors.white70,
-            //             fontSize: 15,
-            //             fontWeight: FontWeight.w500),
-            //       ),
-            //     ),
-            //     Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         Padding(
-            //           padding: const EdgeInsets.only(top: 50, left: 15),
-            //           child: IconButton(
-            //               onPressed: () {
-            //                 if (isLoop == true) {
-            //                   audioPlayer.setLoopMode(LoopMode.single);
-            //                 } else {
-            //                   audioPlayer.setLoopMode(LoopMode.playlist);
-            //                 }
-            //                 setState(() {
-            //                   isLoop = !isLoop;
-            //                 });
-            //               },
-            //               icon: Icon(
-            //                 Icons.repeat,
-            //                 size: 30,
-            //               )),
-            //         ),
-            //         Padding(
-            //           padding: const EdgeInsets.only(right: 15, top: 50),
-            //           child: IconButton(
-            //               onPressed: () {},
-            //               icon: Icon(
-            //                 Icons.playlist_add_rounded,
-            //                 size: 30,
-            //               )),
-            //         )
-            //       ],
-            //     ),
-            //     Padding(
-            //       padding: const EdgeInsets.only(
-            //         left: 15,
-            //       ),
-            //       //
-            //     ),
-
-            //     audioPlayer.builderRealtimePlayingInfos(builder: (context, info) {
-            //       return Padding(
-            //         padding: const EdgeInsets.only(left: 20, right: 20),
-            //         child: ProgressBar(
-            //           thumbColor: Colors.white,
-            //           baseBarColor: Colors.black,
-            //           bufferedBarColor: Colors.black45,
-            //           thumbGlowColor: Colors.black,
-            //           progressBarColor: Colors.white,
-            //           timeLabelTextStyle: TextStyle(color: Colors.white),
-            //           progress: info.currentPosition,
-            //           total: info.duration,
-            //           onSeek: (newPosition) {
-            //             audioPlayer.seek(newPosition);
-            //           },
-            //         ),
-            //       );
-            //     }),
-
-            //     //
-            //     Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         IconButton(
-            //             onPressed: () {},
-            //             icon: Icon(
-            //               Icons.shuffle,
-            //               size: 30,
-            //             )),
-            //         SizedBox(width: _MediaQuery.size.width * 0.13),
-            //         IconButton(
-            //             onPressed: () {
-            //               audioPlayer.previous();
-            //             },
-            //             icon: Icon(
-            //               Icons.fast_rewind_rounded,
-            //               size: 50,
-            //               color: Color(0xff3A2D43),
-            //             )),
-
-            //         IconButton(
-            //           onPressed: () {
-            //             if (isPlaying == true) {
-            //               audioPlayer.pause();
-
-            //               setState(() {
-            //                 isPlaying = false;
-            //               });
-            //             } else if (isPlaying == false) {
-            //               audioPlayer.play();
-            //               setState(() {
-            //                 isPlaying = true;
-            //               });
-            //             }
-            //           },
-            //           icon: isPlaying == true
-            //               ? Icon(
-            //                   Icons.pause_circle,
-            //                   size: 50,
-            //                 )
-            //               : Icon(
-            //                   Icons.play_circle,
-            //                   size: 50,
-            //                 ),
-            //         ),
-            //         IconButton(
-            //             onPressed: () {
-            //               audioPlayer.next();
-            //             },
-            //             icon: Icon(
-            //               Icons.fast_forward_rounded,
-            //               size: 50,
-            //               color: Color(0xff3A2D43),
-            //             )),
-            //         SizedBox(width: _MediaQuery.size.width * 0.17),
-            //         IconButton(
-            //             onPressed: () {},
-            //             icon: Icon(
-            //               Icons.favorite,
-            //               size: 30,
-            //               color: Colors.white,
-            //             )),
-            //       ],
-            //     )
-            //   ],
-            // ),
+            //
             ));
+  }
+
+  showplaylistmodelbottomsheet({
+    required BuildContext ctx,
+    required String songId,
+  }) {
+    Box<List> PlaylistBox = Hive.box<List>("Playlist");
+    var _MediaQuery = MediaQuery.of(context);
+    showBottomSheet(
+      context: ctx,
+      builder: (context) {
+        return Container(
+            height: _MediaQuery.size.height * 0.55,
+            color: Color(0xff9C95A1),
+            width: double.infinity,
+            child: Column(children: [
+              ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xff3A2D43),
+                  ),
+                  onPressed: () {
+                    Alertfunc.showCreatingPlaylistDialogue(context);
+                  },
+                  icon: Icon(Icons.add),
+                  label: Text("Create Playlist")),
+              Expanded(
+                  child: ValueListenableBuilder(
+                      valueListenable: PlaylistBox.listenable(),
+                      builder: (context, value, child) {
+                        List keys = PlaylistBox.keys.toList();
+                        keys.removeWhere((element) => element == 'favourites');
+                        keys.removeWhere((element) => element == 'recent');
+                        keys.removeWhere(
+                            (element) => element == 'mostlyPlayed');
+
+                        return (keys.isEmpty)
+                            ? Center(
+                                child: Text(
+                                    "Save your Music Collection in Playlist"),
+                              )
+                            : ListView.separated(
+                                separatorBuilder: (context, index) => SizedBox(
+                                  height: _MediaQuery.size.height * 0.01,
+                                ),
+                                itemCount: keys.length,
+                                itemBuilder: (context, index) {
+                                  final String playlistName = keys[index];
+                                  final List<SongTypes> playlistSongList =
+                                      PlaylistBox.get(playlistName)!
+                                          .toList()
+                                          .cast<SongTypes>();
+                                  return PlaylistList(
+                                    playListName: playlistName,
+                                    songId: songId,
+                                  );
+                                },
+                              );
+                      }))
+            ]));
+      },
+    );
   }
 }

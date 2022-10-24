@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:music_player/models/types.dart';
+import 'package:music_player/widgets/textfielPlaylist.dart';
 
 class Alertfunc {
   static showCreatingPlaylistDialogue(context) {
@@ -21,57 +22,41 @@ class Alertfunc {
 
     showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-              title: Text('create Folder'),
-              content: TextField(
-                controller: textEditingController,
-                decoration: InputDecoration(hintText: "Enter Folder Name"),
-              ),
-              actions: [
-                TextButton(onPressed: () {}, child: Text('close')),
-                TextButton(
-                    onPressed: () {},
-                    //async {
-                    //   List<SongTypes> songList = [];
-                    //   final String playlistName =
-                    //       textEditingController.text.trim();
-                    //   if (playlistName.isEmpty) {
-                    //     return;
-                    //   } else {
-                    //     await PlaylistBox.put(playlistName, songList);
-                    //   }
-                    // },
-                    child: Text('create'))
-              ],
-            ));
-
-    // showAlertDialog(BuildContext context) {
-    //   // Create button
-    //   Widget okButton = ElevatedButton(
-    //     child: Text("OK"),
-    //     onPressed: () {
-    //       Navigator.of(context).pop();
-    //     },
-    //   );
-
-    // Create AlertDialog
-    // AlertDialog alert = AlertDialog(
-    //   title: Text("Create Folder"),
-    //   // content: ( Text("enter Folder Name")),
-    //   content:
-    //       TextField(decoration: InputDecoration(hintText: "Enter Folder Name")),
-    //   // actions: [
-    //   //   okButton,
-    //   // ],
-    // );
-
-    // // show the dialog
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return alert;
-    //   },
-    // );
-    // }
+        builder: (BuildContext ctx) {
+          final formKey = GlobalKey<FormState>();
+          return Form(
+              key: formKey,
+              child: AlertDialog(
+                title: Text('create Folder'),
+                //
+                content: TextFieldPlaylist(
+                  hintText: "Enter folder Name",
+                  textController: textEditingController,
+                  validator: (value) {
+                    final keys = Hive.box<List>("Playlist").keys.toList();
+                    if (value == null || value.isEmpty) {
+                      return "please Enter";
+                    }
+                    if (keys.contains(value)) {
+                      return '$value Already Exist';
+                    }
+                    return null;
+                  },
+                ),
+                actions: [
+                  TextButton(onPressed: () {}, child: Text('close')),
+                  TextButton(
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          await createnewplaylist();
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Text('create'))
+                ],
+              ));
+        });
   }
+
+//
 }

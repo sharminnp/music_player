@@ -7,7 +7,7 @@
 
 
    <application
-        android:label="music_player"
+        android:label="Tunifly"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

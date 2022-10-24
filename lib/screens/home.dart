@@ -9,6 +9,8 @@ import 'package:music_player/screens/searchscreen.dart';
 import 'package:music_player/widgets/Homesongs.dart';
 import 'package:music_player/widgets/mini_player.dart';
 
+import '../models/types.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -24,9 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var _MediaQuery = MediaQuery.of(context);
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Color(0xff9C95A1),
-        body: Column(
+        child: Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Color(0xff9C95A1),
+      body: Builder(builder: (context) {
+        return Column(
           children: [
             Expanded(
               child: Column(
@@ -217,12 +221,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   right: 13,
                   top: 10,
                 ),
-                child: Homesongs(),
+                child: Homesongs(context: context),
               ),
             ),
           ],
-        ),
-      ),
-    );
+        );
+      }),
+    ));
   }
 }

@@ -1,5 +1,6 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:music_player/functions/recentMostFav.dart';
 import 'package:music_player/models/types.dart';
 import 'package:music_player/screens/Playing_Screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -21,8 +22,6 @@ class _MiniPlayerState extends State<MiniPlayer> {
   Audio find(List<Audio> source, String fromPath) {
     return source.firstWhere((element) => element.path == fromPath);
   }
-
-  bool isPlaying = true;
 
   List<Audio> songAudio = [];
   convertSongModelToAudio() {
@@ -58,6 +57,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
   Widget build(BuildContext context) {
     return audioPlayer.builderCurrent(builder: (BuildContext context, Playing) {
       final myAudio = find(songAudio, Playing.audio.assetAudioPath);
+      addSongstoRecents(id: myAudio.metas.id!, context: context);
       return GestureDetector(
         onTap: () {
           Navigator.push(
@@ -103,48 +103,56 @@ class _MiniPlayerState extends State<MiniPlayer> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                    onPressed: () {
-                      audioPlayer.previous();
-                    },
-                    icon: Icon(
-                      Icons.fast_rewind_rounded,
-                      size: 35,
-                      color: Color(0xff3A2D43),
-                    )),
-                IconButton(
-                    onPressed: () {
-                      if (isPlaying == true) {
-                        audioPlayer.pause();
-                        setState(() {
-                          isPlaying = false;
-                        });
-                      } else if (isPlaying == false) {
-                        {
-                          audioPlayer.play();
-                          setState(() {
-                            isPlaying = true;
-                          });
-                        }
-                      }
-                    },
-                    icon: isPlaying == true
-                        ? Icon(
-                            Icons.pause_circle,
-                            size: 35,
-                            color: Color(0xff3A2D43),
-                          )
-                        : Icon(Icons.play_circle,
-                            size: 35, color: Color(0xff3A2D43))),
-                IconButton(
-                    onPressed: () {
-                      audioPlayer.next();
-                    },
-                    icon: Icon(
-                      Icons.fast_forward_rounded,
-                      size: 35,
-                      color: Color(0xff3A2D43),
-                    )),
+                InkWell(
+                  onDoubleTap: () {},
+                  child: IconButton(
+                      onPressed: () {
+                        audioPlayer.previous();
+                      },
+                      icon: Icon(
+                        Icons.fast_rewind_rounded,
+                        size: 35,
+                        color: Color(0xff3A2D43),
+                      )),
+                ),
+                PlayerBuilder.isPlaying(
+                    player: audioPlayer,
+                    builder: (context, isPlaying) {
+                      return IconButton(
+                        onPressed: () {
+                          if (isPlaying) {
+                            audioPlayer.pause();
+                          } else {
+                            {
+                              audioPlayer.play();
+                            }
+                          }
+                        },
+                        icon: isPlaying
+                            ? const Icon(
+                                Icons.pause_circle,
+                                size: 35,
+                                color: Color(0xff3A2D43),
+                              )
+                            : const Icon(
+                                Icons.play_circle,
+                                size: 35,
+                                color: Color(0xff3A2D43),
+                              ),
+                      );
+                    }),
+                InkWell(
+                  onDoubleTap: () {},
+                  child: IconButton(
+                      onPressed: () {
+                        audioPlayer.next();
+                      },
+                      icon: Icon(
+                        Icons.fast_forward_rounded,
+                        size: 35,
+                        color: Color(0xff3A2D43),
+                      )),
+                ),
               ],
             ),
           ),

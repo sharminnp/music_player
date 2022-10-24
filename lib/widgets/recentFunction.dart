@@ -23,26 +23,6 @@ class _RecentTileState extends State<RecentTile> {
   static Box<SongTypes> songBox = Hive.box<SongTypes>("DbSongs");
   static Box<List> PlaylistBox = Hive.box<List>("Playlist");
 
-//  static addSongstoRecents({required BuildContext context,required String id })async{
-
-//  List<SongTypes> dbSongs = songBox.values.toList().cast();
-
-//     final List<SongTypes> recentSongList =
-//         PlaylistBox.get('recent')!.toList().cast<SongTypes>();
-
-//     final SongTypes recentSong =
-//         dbSongs.firstWhere((song) => song.id.contains(id));
-//     if (recentSongList.where((song) => song.id == recentSong.id).isEmpty){
-//       recentSongList.insert(0, recentSong);
-//       await PlaylistBox.put('recent', recentSongList);
-//     }else{
-//       recentSongList.removeWhere((song) => song.id==recentSong.id);
-//       recentSongList.insert(0, recentSong);
-//       await PlaylistBox.put('recent', recentSongList);
-//     }
-
-//  }
-
   @override
   Widget build(BuildContext context) {
     var _MediaQuery = MediaQuery.of(context);
@@ -65,6 +45,7 @@ class _RecentTileState extends State<RecentTile> {
         ),
         title: Text(
           widget.songList[widget.index].title,
+          maxLines: 1,
           style: TextStyle(
             color: Color(0xffDCC6C6),
             fontWeight: FontWeight.w700,
@@ -73,6 +54,7 @@ class _RecentTileState extends State<RecentTile> {
         ),
         subtitle: Text(
           widget.songList[widget.index].artist,
+          maxLines: 1,
           style: TextStyle(color: Colors.white, fontSize: 12),
         ),
         trailing: IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),

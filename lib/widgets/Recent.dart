@@ -2,6 +2,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:hive_flutter/adapters.dart';
+import 'package:music_player/widgets/custom_list_tile.dart';
 
 import 'package:music_player/widgets/recentFunction.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -22,11 +23,14 @@ class _RecentSongsState extends State<RecentSongs> {
 
   Box<List> PlaylistBox = Hive.box<List>("Playlist");
   List<SongTypes>? recentSong;
+  List<SongTypes>? dbSongs;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     recentSong = PlaylistBox.get('recent')!.toList().cast<SongTypes>();
+    dbSongs = songBox.values.toList().cast<SongTypes>();
   }
 
   @override
@@ -44,12 +48,14 @@ class _RecentSongsState extends State<RecentSongs> {
                 )
               : ListView.separated(
                   separatorBuilder: ((context, index) => SizedBox(
-                        height: 5,
+                        height: _MediaQuery.size.height * 0.01,
                       )),
                   itemCount: songList.length,
                   itemBuilder: (context, index) {
-                    return RecentTile(
-                        context: context, songList: songList, index: index);
+                    // return RecentTile(
+                    //     context: context, songList: songList, index: index);
+                    return CustomListTile(
+                        context: context, songList: recentSong!, index: index);
                   },
                 );
         });

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:music_player/widgets/Recent.dart';
-import 'package:music_player/widgets/common.dart';
-import 'package:music_player/widgets/mini_player.dart';
 
 class RecentsScreen extends StatelessWidget {
   const RecentsScreen({Key? key}) : super(key: key);
@@ -10,11 +8,11 @@ class RecentsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff9C95A1),
+      backgroundColor: const Color(0xff9C95A1),
       appBar: AppBar(
-        backgroundColor: Color(0xff9C95A1),
+        backgroundColor: const Color(0xff9C95A1),
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Rencently Played",
           style: TextStyle(
             fontSize: 20,
@@ -25,11 +23,11 @@ class RecentsScreen extends StatelessWidget {
         elevation: 0,
       ),
       body: Column(
-        children: [
+        children: const [
           Expanded(
             flex: 2,
             child: Padding(
-              padding: const EdgeInsets.only(left: 13, right: 13, top: 8),
+              padding: EdgeInsets.only(left: 13, right: 13, top: 8),
               child: RecentSongs(),
             ),
           ),
